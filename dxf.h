@@ -9,7 +9,7 @@
 typedef struct dxf_ctx
 {
 	FILE *fp;
-	const char *layer;
+	char layer[128];
 	u64 next_handle;
 } dxf_ctx_t;
 
@@ -99,7 +99,7 @@ int dxf__entity(dxf_ctx_t *ctx, const char *type)
 static
 int dxf__layer(dxf_ctx_t *ctx)
 {
-	assert(ctx->layer);
+	assert(ctx->layer[0]);
 	return dxf__str(ctx, 8, ctx->layer);
 }
 
@@ -131,7 +131,7 @@ int dxf__point3(dxf_ctx_t *ctx, int code, dxf_real x, dxf_real y, dxf_real z)
 void dxf_init(dxf_ctx_t *ctx, FILE *fp)
 {
 	ctx->fp = fp;
-	ctx->layer = NULL;
+	ctx->layer[0] = '\0';
 	ctx->next_handle = 1;
 }
 
@@ -255,7 +255,9 @@ int dxf_layer(dxf_ctx_t *ctx, const char *name, s16 color, const char *line_type
 
 void dxf_set_layer(dxf_ctx_t *ctx, const char *layer)
 {
-	ctx->layer = layer;
+	DXF_ASSERT(strlen(layer) < sizeof(ctx->layer));
+	strncpy(ctx->layer, layer, sizeof(ctx->layer));
+	ctx->layer[sizeof(ctx->layer) - 1] = '\0';
 }
 
 int dxf_comment(dxf_ctx_t *ctx, const char *comment)
