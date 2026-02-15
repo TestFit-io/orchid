@@ -46,6 +46,9 @@ int  dxf_polyline(dxf_ctx_t *ctx, const dxf_real *p, int n);
 int  dxf_polygon(dxf_ctx_t *ctx, const dxf_real *p, int n);
 int  dxf_text(dxf_ctx_t *ctx, dxf_real x, dxf_real y, int height, const char *text);
 
+int dxf_header_var_int(dxf_ctx_t *ctx, const char *name, int val);
+int dxf_header_var_str(dxf_ctx_t *ctx, const char *name, const char *val);
+
 int dxf_end(dxf_ctx_t *ctx);
 
 
@@ -308,6 +311,20 @@ int dxf_text(dxf_ctx_t *ctx, dxf_real x, dxf_real y, int height, const char *tex
 	DXF__CHECK(dxf__real(ctx, 20, x));
 	DXF__CHECK(dxf__int(ctx, 40, height));
 	DXF__CHECK(dxf__str(ctx, 1, text));
+	return 0;
+}
+
+int dxf_header_var_int(dxf_ctx_t *ctx, const char *name, int val)
+{
+	DXF__CHECK(dxf__str(ctx, 9, name));
+	DXF__CHECK(dxf__int(ctx, 70, val));
+	return 0;
+}
+
+int dxf_header_var_str(dxf_ctx_t *ctx, const char *name, const char *val)
+{
+	DXF__CHECK(dxf__str(ctx, 9, name));
+	DXF__CHECK(dxf__str(ctx, 1, val));
 	return 0;
 }
 
